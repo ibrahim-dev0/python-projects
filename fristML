@@ -1,0 +1,48 @@
+import numpy as np
+
+
+X = np.array([
+    [0, 0],
+    [0, 1],
+    [1, 0],
+    [1, 1]
+])
+
+y_true = np.array([0, 1, 1, 1])
+W = np.random.randn(2)
+b = 0.0
+def sigmoid(z):
+    return 1 / (1 + np.exp(-z))
+z = X @ W + b
+y_pred = sigmoid(z)
+print(y_pred)
+loss = np.mean((y_pred - y_true) ** 2)
+print("Loss:", loss)
+lr = 0.1  
+
+dL_dy = 2 * (y_pred - y_true) / y_true.size
+
+dy_dz = y_pred * (1 - y_pred)
+
+dz = dL_dy * dy_dz
+
+W -= lr * (X.T @ dz)
+b -= lr * np.sum(dz)
+for epoch in range(1000):
+    z = X @ W + b
+    y_pred = sigmoid(z)
+    
+    loss = np.mean((y_pred - y_true) ** 2)
+    
+    dL_dy = 2 * (y_pred - y_true) / y_true.size
+    dy_dz = y_pred * (1 - y_pred)
+    dz = dL_dy * dy_dz
+    
+    W -= lr * (X.T @ dz)
+    b -= np.sum(dz) * lr
+    
+    if epoch % 100 == 0:
+        print(f"Epoch {epoch}, Loss: {loss:.4f}")
+y_pred = sigmoid(X @ W + b)
+print("Predictions:", y_pred)
+
